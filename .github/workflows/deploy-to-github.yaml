@@ -10,6 +10,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      actions: write
     steps:
       - name: 'Extract semantic version'
         run: echo "GEOTOOLS_VERSION=$(echo "${{ github.ref_name }}" | sed -E 's/^([0-9\.]+).*$/\1/')" >> "$GITHUB_ENV"
