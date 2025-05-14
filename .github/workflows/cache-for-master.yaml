@@ -34,4 +34,4 @@ jobs:
           cache: 'maven'
 
       - name: 'Fetch dependencies for cache'
-        run: mvn --batch-mode --fail-never dependency:resolve dependency:resolve-plugins
+        run: mvn --no-transfer-progress --batch-mode -Dall --fail-never dependency:resolve dependency:resolve-plugins

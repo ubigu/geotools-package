@@ -42,7 +42,7 @@ jobs:
 
 
       - name: 'Apply patches from package utils'
-        run: for i in packageutils/patches/*.patch; do git apply $i; done
+        run: for i in packageutils/patches/*.patch; do echo "Applying patch $i"; git apply $i; done
 
       - uses: actions/setup-java@v4
         with:
@@ -51,6 +51,6 @@ jobs:
           cache: 'maven'
 
       - name: Publish package
-        run: mvn --no-transfer-progress --batch-mode deploy -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/${{github.repository}}
+        run: mvn --no-transfer-progress --batch-mode   deploy -Dall -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/${{github.repository}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
