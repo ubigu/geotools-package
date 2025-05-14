@@ -11,11 +11,13 @@ jobs:
       contents: read
       packages: write
     steps:
+      - name: 'Extract semantic version'
+        run: echo "GEOTOOLS_VERSION=$(echo "${{ github.ref_name }}" | sed -E 's/^([0-9\.]+).*$/\1/')" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v4
         with:
           repository: geotools/geotools
-          ref: refs/tags/${{ github.ref_name }}
+          ref: refs/tags/${{ env.GEOTOOLS_VERSION }}
 
       - name: 'Pull package utils from this repo'
         uses: actions/checkout@v4
