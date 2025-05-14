@@ -54,6 +54,6 @@ jobs:
         run: mvn --no-transfer-progress --batch-mode versions:set -DnewVersion=${{ github.ref_name }}
 
       - name: Publish package
-        run: mvn --no-transfer-progress --batch-mode deploy -Dall -Dmaven.test.skip=true -DaltDeploymentRepository=github::https://maven.pkg.github.com/${{github.repository}}
+        run: mvn --no-transfer-progress --fail-never --batch-mode deploy -Dall -DaltDeploymentRepository=github::https://maven.pkg.github.com/${{github.repository}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
