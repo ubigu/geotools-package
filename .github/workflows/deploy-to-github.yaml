@@ -27,7 +27,7 @@ jobs:
       # We need to run a separate cache job in master branch, becase
       # tags can not access caches from other tags, only from master
       - name: Trigger action to cache packages
-        run: gh workflow run "Cache maven packages on master" -R ${{github.repository}} -f "tag_name=${{ github.ref_name }}"
+        run: gh workflow run "Cache maven packages on master" -R ${{github.repository}} -f "tag_name=${{ env.GEOTOOLS_VERSION }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Fix... the action..
