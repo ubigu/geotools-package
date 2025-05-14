@@ -1,0 +1,53 @@
+name: Publish package to GitHub Packages
+on:
+  release:
+    types: [created]
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          repository: geotools/geotools
+          ref: refs/tags/${{ github.ref_name }}
+
+      - name: 'Pull package utils from this repo'
+        uses: actions/checkout@v4
+        with:
+          path: packageutils
+
+      # We need to run a separate cache job in master branch, becase
+      # tags can not access caches from other tags, only from master
+      - name: Trigger action to cache packages
+        run: gh workflow run "Cache maven packages on master" -R ${{github.repository}} --f "tag_name=${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Fix... the action..
+      #      - name: Wait for cache to be processed
+      #        uses: kamilchodola/wait-for-workflow-action@1.1.0
+      #        with:
+      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #          workflow_id: 'cache-for-master.yaml'
+      #          org_name: 'ubigu'
+      #          repo_name: 'oskari-server'
+
+
+      - name: 'Apply patches from package utils'
+        run: for i in packageutils/patches/*.patch; do git apply $i; done
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Publish package
+        run: mvn --no-transfer-progress --batch-mode deploy -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/${{github.repository}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

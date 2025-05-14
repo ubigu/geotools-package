@@ -1,0 +1,20 @@
+diff --git a/modules/plugin/geopkg/src/main/java/org/geotools/geopkg/GeoPkgDialect.java b/modules/plugin/geopkg/src/main/java/org/geotools/geopkg/GeoPkgDialect.java
+index 18df5e4894..0f3fcd0294 100644
+--- a/modules/plugin/geopkg/src/main/java/org/geotools/geopkg/GeoPkgDialect.java
++++ b/modules/plugin/geopkg/src/main/java/org/geotools/geopkg/GeoPkgDialect.java
+@@ -40,6 +40,7 @@
+ import java.util.Optional;
+ import java.util.Set;
+ import java.util.TimeZone;
++import java.util.UUID;
+ import java.util.function.Function;
+ import java.util.logging.Level;
+ import org.geotools.api.feature.FeatureVisitor;
+@@ -251,6 +252,7 @@ public void registerClassToSqlMappings(Map<Class<?>, Integer> mappings) {
+         mappings.put(Float.class, Types.FLOAT);
+         mappings.put(Double.class, Types.DOUBLE);
+         mappings.put(Boolean.class, Types.INTEGER);
++        mappings.put(UUID.class, Types.VARCHAR);
+     }
+ 
+     @Override

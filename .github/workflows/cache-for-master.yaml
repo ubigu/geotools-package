@@ -1,0 +1,37 @@
+name: Cache maven packages on master
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to build geotools on '
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: geotools/geotools
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: refs/tags/${{ inputs.tag_name }}
+      - name: 'Pull package utils from this repo'
+        uses: actions/checkout@v4
+        with:
+          path: packageutils
+
+      - name: 'Apply patches from package utils'
+        run: for i in packageutils/patches/*.patch; do git apply $i; done
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 'Fetch dependencies for cache'
+        run: mvn --batch-mode --fail-never dependency:resolve dependency:resolve-plugins
